@@ -1,0 +1,244 @@
+{#
+  SPDX-License-Identifier: MIT
+  Copyright (c) 2026-present Stable State Consulting Ltd.
+#}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VLANVerify Report — {{ report.generated_at }}</title>
+<style>
+  :root {
+    --held: #1a7f37;
+    --held-bg: #eafaf0;
+    --violated: #b42318;
+    --violated-bg: #fdecea;
+    --warn: #b26a00;
+    --warn-bg: #fff6e5;
+    --inconclusive: #5a6472;
+    --inconclusive-bg: #f1f2f4;
+    --border: #d9dde2;
+    --text: #1f2328;
+    --muted: #57606a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: var(--text);
+    background: #fff;
+    margin: 0;
+    padding: 0 0 4rem 0;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+  header h1 { margin: 0 0 0.25rem 0; font-size: 1.8rem; }
+  header p.tagline { margin: 0 0 1.5rem 0; color: var(--muted); }
+
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem 1.5rem;
+    background: #f6f8fa;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+  }
+  .meta dt { color: var(--muted); font-weight: 600; }
+  .meta dd { margin: 0; }
+
+  .dry-run-badge {
+    display: inline-block;
+    background: var(--warn-bg);
+    color: var(--warn);
+    border: 1px solid var(--warn);
+    border-radius: 6px;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .banner {
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+  }
+  .banner.critical { background: var(--violated-bg); border: 1px solid var(--violated); color: var(--violated); }
+  .banner.clean { background: var(--held-bg); border: 1px solid var(--held); color: var(--held); }
+  .banner ul { margin: 0.5rem 0 0 0; padding-left: 1.25rem; font-weight: 400; }
+
+  .summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+  .card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+    text-align: center;
+  }
+  .card .num { font-size: 1.8rem; font-weight: 700; display: block; }
+  .card .label { color: var(--muted); font-size: 0.85rem; }
+  .card.held { border-color: var(--held); }
+  .card.held .num { color: var(--held); }
+  .card.violated { border-color: var(--violated); }
+  .card.violated .num { color: var(--violated); }
+  .card.inconclusive { border-color: var(--inconclusive); }
+  .card.inconclusive .num { color: var(--inconclusive); }
+
+  h2 { font-size: 1.25rem; margin-top: 2.5rem; margin-bottom: 0.75rem; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 0.6rem 0.7rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f6f8fa; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.02em; color: var(--muted); }
+
+  .badge {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 0.15rem 0.65rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .badge.HELD { background: var(--held-bg); color: var(--held); }
+  .badge.VIOLATED { background: var(--violated-bg); color: var(--violated); }
+  .badge.INCONCLUSIVE { background: var(--inconclusive-bg); color: var(--inconclusive); }
+
+  tr.violated-row { background: var(--violated-bg); }
+  tr.warn-row { background: var(--warn-bg); }
+
+  .arrow { color: var(--muted); }
+
+  details.tech { margin-top: 0.4rem; }
+  details.tech summary { cursor: pointer; color: var(--muted); font-size: 0.8rem; }
+  details.tech table { margin-top: 0.5rem; font-size: 0.82rem; }
+  details.tech th, details.tech td { padding: 0.35rem 0.5rem; }
+  code { background: #f1f2f4; padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.85em; }
+
+  footer { margin-top: 3rem; color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>VLANVerify Report</h1>
+  <p class="tagline">VLAN network segmentation test results — plain-English summary for review or audit evidence.</p>
+</header>
+
+{% if report.dry_run %}
+<div class="dry-run-badge">DRY RUN — no real network traffic was sent; results are simulated.</div>
+{% endif %}
+
+<dl class="meta">
+  <div><dt>Scan date</dt><dd>{{ report.generated_at }}</dd></div>
+  <div><dt>Probe device interface</dt><dd><code>{{ report.device_interface }}</code></dd></div>
+  <div><dt>Policy file</dt><dd><code>{{ report.policy_path }}</code></dd></div>
+  <div><dt>Policy file checksum (SHA-256)</dt><dd><code>{{ report.policy_hash }}</code></dd></div>
+</dl>
+
+{% if security_violations %}
+<div class="banner critical">
+  {{ security_violations|length }} critical finding{{ 's' if security_violations|length != 1 else '' }}: traffic that should have been blocked between VLANs was NOT blocked.
+  <ul>
+    {% for r in security_violations %}
+    <li>'{{ r.from_vlan }}' could reach '{{ r.to_vlan }}' — this boundary is not enforced.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% else %}
+<div class="banner clean">No critical findings. Every rule that required traffic to be blocked between VLANs was confirmed blocked.</div>
+{% endif %}
+
+<div class="summary-cards">
+  <div class="card"><span class="num">{{ total }}</span><span class="label">Rules tested</span></div>
+  <div class="card held"><span class="num">{{ counts.HELD }}</span><span class="label">Held</span></div>
+  <div class="card violated"><span class="num">{{ counts.VIOLATED }}</span><span class="label">Violated</span></div>
+  <div class="card inconclusive"><span class="num">{{ counts.INCONCLUSIVE }}</span><span class="label">Inconclusive</span></div>
+</div>
+
+<h2>Test results</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Rule</th>
+      <th>Expected</th>
+      <th>Actual</th>
+      <th>Verdict</th>
+      <th>Explanation</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in report.rule_results %}
+    <tr class="{{ 'violated-row' if r.is_security_violation else ('warn-row' if r.verdict == Verdict.VIOLATED else '') }}">
+      <td>{{ r.from_vlan }} <span class="arrow">&rarr;</span> {{ r.to_vlan }}</td>
+      <td>{{ r.expect.value }}</td>
+      <td>{{ 'reachable' if r.actual_reachable else 'blocked' }}</td>
+      <td><span class="badge {{ r.verdict.value }}">{{ r.verdict.value }}</span></td>
+      <td>
+        {{ r.notes }}
+        <details class="tech">
+          <summary>Technical details</summary>
+          <div>
+            Target: <code>{{ r.target_ip or 'n/a' }}</code>
+            {% if r.target_discovered %}(auto-discovered){% endif %}
+            {% if r.ports_tested %} &middot; Ports tested: {{ r.ports_tested|join(', ') }}{% endif %}
+          </div>
+          {% if r.probes %}
+          <table>
+            <thead><tr><th>Check</th><th>Result</th><th>Detail</th></tr></thead>
+            <tbody>
+              {% for p in r.probes %}
+              <tr>
+                <td>{{ 'ICMP ping' if p.kind == 'ping' else 'TCP port ' ~ p.port }}</td>
+                <td>{{ p.outcome.value }}</td>
+                <td>{{ p.detail }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% endif %}
+        </details>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Probe device connectivity</h2>
+<p style="color: var(--muted); font-size: 0.9rem;">
+  How the probe device obtained an address on each VLAN under test. A VLAN with no address at all could not be
+  tested from — this is itself useful information for an audit (e.g. a VLAN with DHCP intentionally disabled).
+</p>
+<table>
+  <thead>
+    <tr><th>VLAN</th><th>Sub-interface</th><th>Address method</th><th>Address</th><th>Notes</th></tr>
+  </thead>
+  <tbody>
+    {% for s in report.interface_statuses %}
+    <tr class="{{ 'warn-row' if s.method.value == 'none' else '' }}">
+      <td>{{ s.vlan_name }} (VLAN {{ s.vlan_id }})</td>
+      <td><code>{{ s.ifname }}</code></td>
+      <td>{{ s.method.value }}</td>
+      <td>{{ s.address or '—' }}</td>
+      <td>{{ s.error or '' }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<footer>
+  Generated by VLANVerify. This report reflects network behaviour observed at the time of the scan only
+  (point-in-time test, not continuous monitoring). Full policy file is fingerprinted above by SHA-256 checksum
+  for evidence purposes.
+</footer>
+
+</div>
+</body>
+</html>
