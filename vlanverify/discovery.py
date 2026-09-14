@@ -19,7 +19,7 @@ import logging
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
 
-log = logging.getLogger("vlanprobe.discovery")
+log = logging.getLogger("vlanverify.discovery")
 
 # Don't sweep more than this many hosts — keeps a /16 typo from turning a
 # scan into an hours-long ping storm.

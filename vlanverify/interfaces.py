@@ -21,10 +21,10 @@ import logging
 import subprocess
 from dataclasses import dataclass
 
-from vlanprobe.models import InterfaceStatus, IPAssignMethod
-from vlanprobe.schema import VlanConfig
+from vlanverify.models import InterfaceStatus, IPAssignMethod
+from vlanverify.schema import VlanConfig
 
-log = logging.getLogger("vlanprobe.interfaces")
+log = logging.getLogger("vlanverify.interfaces")
 
 
 def subif_name(trunk: str, vlan_id: int) -> str:

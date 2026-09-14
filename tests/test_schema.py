@@ -5,7 +5,7 @@ import textwrap
 
 import pytest
 
-from vlanprobe.schema import PolicyError, load_policy
+from vlanverify.schema import PolicyError, load_policy
 
 
 def write_policy(tmp_path, content: str):

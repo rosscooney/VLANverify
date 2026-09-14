@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-present Stable State Consulting Ltd.
 
-from vlanprobe.models import (
+from vlanverify.models import (
     Expectation,
     IPAssignMethod,
     InterfaceStatus,
@@ -10,8 +10,8 @@ from vlanprobe.models import (
     RuleResult,
     Verdict,
 )
-from vlanprobe.report import build_report, render_html
-from vlanprobe.schema import load_policy
+from vlanverify.report import build_report, render_html
+from vlanverify.schema import load_policy
 
 
 def make_rule_result(from_v, to_v, expect, verdict, reachable=True):
@@ -37,7 +37,7 @@ def test_report_renders_summary_counts():
                            interface_statuses=statuses, rule_results=results)
     html = render_html(report)
 
-    assert "VLANProbe Report" in html
+    assert "VLANVerify Report" in html
     assert 'DRY RUN' in html
     assert '<span class="num">3</span>' in html  # total rules tested
     assert '<span class="num">1</span>' in html  # each of held/violated/inconclusive is 1

@@ -2,8 +2,8 @@
 # Copyright (c) 2026-present Stable State Consulting Ltd.
 
 [project]
-name = "vlanprobe"
-version = "0.1.0"
+name = "vlanverify"
+version = "0.1.1"
 description = "Verifies that VLAN network isolation actually holds in practice, for Cyber Essentials Plus style audits."
 requires-python = ">=3.10"
 license = "MIT"
@@ -15,8 +15,12 @@ dependencies = [
     "click>=8.1",
 ]
 
+[project.urls]
+Homepage = "https://www.vlanverify.com"
+Repository = "https://github.com/rosscooney/vlanverify"
+
 [project.scripts]
-vlanprobe = "vlanprobe.cli:main"
+vlanverify = "vlanverify.cli:main"
 
 [project.optional-dependencies]
 dev = [
@@ -28,7 +32,7 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-include = ["vlanprobe*"]
+include = ["vlanverify*"]
 
 [tool.setuptools.package-data]
-vlanprobe = ["templates/*.j2"]
+vlanverify = ["templates/*.j2"]

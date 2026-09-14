@@ -3,10 +3,10 @@
 
 import textwrap
 
-from vlanprobe.discovery import DryRunHostDiscoverer, HostDiscoverer
-from vlanprobe.models import IPAssignMethod, InterfaceStatus, ProbeOutcome, Verdict
-from vlanprobe.schema import load_policy
-from vlanprobe.testengine import MockProber, TestEngine
+from vlanverify.discovery import DryRunHostDiscoverer, HostDiscoverer
+from vlanverify.models import IPAssignMethod, InterfaceStatus, ProbeOutcome, Verdict
+from vlanverify.schema import load_policy
+from vlanverify.testengine import MockProber, TestEngine
 
 
 def make_policy(tmp_path, content: str):

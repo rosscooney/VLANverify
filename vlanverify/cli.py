@@ -3,8 +3,8 @@
 
 """Command-line entry point.
 
-  vlanprobe validate --policy policy.yaml
-  vlanprobe scan --policy policy.yaml --interface eth0 --output report.html [--dry-run]
+  vlanverify validate --policy policy.yaml
+  vlanverify scan --policy policy.yaml --interface eth0 --output report.html [--dry-run]
 """
 from __future__ import annotations
 
@@ -13,14 +13,14 @@ import sys
 
 import click
 
-from vlanprobe.discovery import DryRunHostDiscoverer, RealHostDiscoverer
-from vlanprobe.interfaces import build_interface_manager
-from vlanprobe.models import Verdict
-from vlanprobe.report import build_report, write_report
-from vlanprobe.schema import Policy, PolicyError, load_policy
-from vlanprobe.testengine import MockProber, RealProber, TestEngine
+from vlanverify.discovery import DryRunHostDiscoverer, RealHostDiscoverer
+from vlanverify.interfaces import build_interface_manager
+from vlanverify.models import Verdict
+from vlanverify.report import build_report, write_report
+from vlanverify.schema import Policy, PolicyError, load_policy
+from vlanverify.testengine import MockProber, RealProber, TestEngine
 
-log = logging.getLogger("vlanprobe")
+log = logging.getLogger("vlanverify")
 
 
 def _setup_logging(verbose: bool) -> None:
@@ -32,7 +32,7 @@ def _setup_logging(verbose: bool) -> None:
 
 @click.group()
 def main():
-    """VLANProbe — verify that VLAN network isolation actually holds in practice."""
+    """VLANVerify — verify that VLAN network isolation actually holds in practice."""
 
 
 @main.command()
@@ -94,7 +94,7 @@ def scan(policy_path: str, interface: str | None, output_path: str, dry_run: boo
         sys.exit(1)
 
     mode = "DRY RUN" if dry_run else "LIVE"
-    click.secho(f"VLANProbe scan [{mode}] — trunk interface {trunk_interface}", bold=True)
+    click.secho(f"VLANVerify scan [{mode}] — trunk interface {trunk_interface}", bold=True)
 
     ifmgr = build_interface_manager(dry_run, trunk_interface, policy.defaults.dhcp_timeout)
     prober = MockProber() if dry_run else RealProber()

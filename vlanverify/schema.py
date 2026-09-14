@@ -16,7 +16,7 @@ from pathlib import Path
 import yaml
 from pydantic import BaseModel, Field, ValidationError, field_validator, model_validator
 
-from vlanprobe.models import INTERNET_TARGET, Expectation
+from vlanverify.models import INTERNET_TARGET, Expectation
 
 DEFAULT_PORTS = [22, 80, 443, 445, 3389]
 DEFAULT_DHCP_TIMEOUT = 15

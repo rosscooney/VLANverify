@@ -1,6 +1,8 @@
-# VLANProbe
+# VLANVerify
 
-VLANProbe verifies that VLAN network segmentation actually holds in
+[www.vlanverify.com](https://www.vlanverify.com) · [GitHub](https://github.com/rosscooney/vlanverify)
+
+VLANVerify verifies that VLAN network segmentation actually holds in
 practice, instead of trusting the switch/firewall configuration alone.
 It's built for small businesses and the IT consultants preparing them for
 a Cyber Essentials / Cyber Essentials Plus audit, where an assessor wants
@@ -8,7 +10,7 @@ evidence that segmented network boundaries genuinely block traffic — not
 just a network diagram that claims they do.
 
 A single Linux device (a Raspberry Pi or similar) connects to a trunk
-port on the switch. VLANProbe creates a tagged 802.1Q sub-interface for
+port on the switch. VLANVerify creates a tagged 802.1Q sub-interface for
 every VLAN under test, so it can originate and receive traffic as if it
 were a host on each VLAN in turn — without needing to be physically moved
 between ports. It then tests actual reachability between VLANs against a
@@ -27,14 +29,14 @@ python3 -m venv .venv
 .venv/bin/pip install -e .
 
 # Check a policy file is well-formed, no network access required
-.venv/bin/vlanprobe validate --policy policies/example.yaml
+.venv/bin/vlanverify validate --policy policies/example.yaml
 
 # Try the full pipeline without touching real interfaces
-.venv/bin/vlanprobe scan --policy policies/example.yaml --interface eth0 \
+.venv/bin/vlanverify scan --policy policies/example.yaml --interface eth0 \
     --output report.html --dry-run
 
 # On the actual probe device, plugged into a trunk port, as root:
-sudo vlanprobe scan --policy policies/example.yaml --interface eth0 \
+sudo vlanverify scan --policy policies/example.yaml --interface eth0 \
     --output report.html
 ```
 
@@ -83,7 +85,7 @@ vlans:
       address: 10.0.10.5/24
       gateway: 10.0.10.1
     target_ip: 10.0.10.50      # known-good host to test against; if omitted,
-                                # VLANProbe ping-sweeps the subnet to find one
+                                # VLANVerify ping-sweeps the subnet to find one
     dhcp_timeout: 15           # optional per-VLAN override of defaults.dhcp_timeout
 
 rules:
@@ -104,14 +106,14 @@ defaults:
   ping: true                         # also ICMP ping alongside the TCP port checks
 ```
 
-Run `vlanprobe validate --policy your.yaml` to check a file against this
+Run `vlanverify validate --policy your.yaml` to check a file against this
 schema — it reports every problem found, not just the first.
 
 ## CLI reference
 
 ```
-vlanprobe validate --policy policy.yaml
-vlanprobe scan --policy policy.yaml --interface eth0 --output report.html [OPTIONS]
+vlanverify validate --policy policy.yaml
+vlanverify scan --policy policy.yaml --interface eth0 --output report.html [OPTIONS]
 ```
 
 `scan` options:
@@ -143,7 +145,7 @@ it straightforward to wire into a script or CI check.
 ## Project layout
 
 ```
-vlanprobe/
+vlanverify/
   models.py       # shared dataclasses/enums (no other module dependencies)
   schema.py       # policy YAML parsing + validation (pydantic)
   interfaces.py   # VLAN sub-interface orchestration: Real + DryRun backends
@@ -152,7 +154,7 @@ vlanprobe/
   report.py         # ScanReport -> self-contained HTML
   templates/
     report.html.j2
-  cli.py             # `vlanprobe validate` / `vlanprobe scan`
+  cli.py             # `vlanverify validate` / `vlanverify scan`
 policies/
   example.yaml
 tests/

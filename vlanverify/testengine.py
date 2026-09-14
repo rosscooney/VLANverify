@@ -16,8 +16,8 @@ import logging
 import socket
 import subprocess
 
-from vlanprobe.discovery import HostDiscoverer
-from vlanprobe.models import (
+from vlanverify.discovery import HostDiscoverer
+from vlanverify.models import (
     INTERNET_TARGET,
     Expectation,
     InterfaceStatus,
@@ -26,9 +26,9 @@ from vlanprobe.models import (
     RuleResult,
     Verdict,
 )
-from vlanprobe.schema import Policy, RuleConfig
+from vlanverify.schema import Policy, RuleConfig
 
-log = logging.getLogger("vlanprobe.testengine")
+log = logging.getLogger("vlanverify.testengine")
 
 PING_TIMEOUT_S = 2
 TCP_TIMEOUT_S = 2

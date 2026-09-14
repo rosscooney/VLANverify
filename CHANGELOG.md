@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-09-14
+
+### Changed
+- Renamed the project from VLANProbe to VLANVerify (package, CLI command,
+  and all documentation). No functional changes.
+
 ## [0.1.0] - 2026-09-14
 
 Initial MVP.
@@ -13,7 +19,7 @@ Initial MVP.
 ### Added
 - YAML policy file schema (VLANs, pairwise `allow`/`deny` rules, optional
   per-rule ports, the special `internet` target) with full validation via
-  `vlanprobe validate`.
+  `vlanverify validate`.
 - VLAN 802.1Q sub-interface orchestration on Linux (`ip link`), with DHCP
   first and a configurable static-IP fallback per VLAN.
 - `--dry-run` mode: logs every action it would take and fabricates
@@ -26,7 +32,7 @@ Initial MVP.
   critical-findings banner for VLAN boundaries that don't hold, a
   per-rule results table, and an expandable technical-details section per
   rule.
-- `vlanprobe scan` and `vlanprobe validate` CLI commands.
+- `vlanverify scan` and `vlanverify validate` CLI commands.
 - Test suite covering the schema, interface orchestration, test engine
   verdict logic, and report rendering (all against dry-run/mock
   backends).

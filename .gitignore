@@ -24,6 +24,6 @@ htmlcov/
 .idea/
 .DS_Store
 
-# VLANProbe scan output (generated locally, not source)
+# VLANVerify scan output (generated locally, not source)
 report.html
 *.report.html

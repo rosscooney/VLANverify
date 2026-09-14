@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-present Stable State Consulting Ltd.
 
-from vlanprobe.interfaces import DryRunInterfaceManager, subif_name
-from vlanprobe.models import IPAssignMethod
-from vlanprobe.schema import StaticConfig, VlanConfig
+from vlanverify.interfaces import DryRunInterfaceManager, subif_name
+from vlanverify.models import IPAssignMethod
+from vlanverify.schema import StaticConfig, VlanConfig
 
 
 def test_subif_name_format():

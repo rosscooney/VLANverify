@@ -15,8 +15,8 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from vlanprobe.models import InterfaceStatus, RuleResult, ScanReport, Verdict
-from vlanprobe.schema import Policy, hash_policy_file
+from vlanverify.models import InterfaceStatus, RuleResult, ScanReport, Verdict
+from vlanverify.schema import Policy, hash_policy_file
 
 TEMPLATE_DIR = Path(__file__).parent / "templates"
 

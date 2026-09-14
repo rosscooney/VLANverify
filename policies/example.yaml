@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-present Stable State Consulting Ltd.
 
-# VLANProbe policy file — see README.md for the full schema reference.
+# VLANVerify policy file — see README.md for the full schema reference.
 #
 # This describes:
 #   1. the VLANs to test (their 802.1Q tag, and how the probe device
@@ -16,7 +16,7 @@ vlans:
   - id: 10
     name: corp
     dhcp: true
-    # No target_ip given here on purpose: VLANProbe will try to discover
+    # No target_ip given here on purpose: VLANVerify will try to discover
     # a live host on this VLAN itself (ping sweep + ARP/neighbour table).
 
   - id: 20
