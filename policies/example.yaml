@@ -1,0 +1,66 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-present Stable State Consulting Ltd.
+
+# VLANProbe policy file — see README.md for the full schema reference.
+#
+# This describes:
+#   1. the VLANs to test (their 802.1Q tag, and how the probe device
+#      should get an address on each one)
+#   2. the pairwise reachability rules that should hold between them
+
+device:
+  # Trunk NIC on the probe device. Can be overridden with --interface.
+  trunk_interface: eth0
+
+vlans:
+  - id: 10
+    name: corp
+    dhcp: true
+    # No target_ip given here on purpose: VLANProbe will try to discover
+    # a live host on this VLAN itself (ping sweep + ARP/neighbour table).
+
+  - id: 20
+    name: guest
+    dhcp: true
+    # Fallback static config, used only if DHCP is disabled or times out
+    # on this VLAN (a common, expected finding on a guest network).
+    static:
+      address: 10.0.20.250/24
+      gateway: 10.0.20.1
+
+  - id: 30
+    name: iot
+    dhcp: false
+    static:
+      address: 10.0.30.250/24
+      gateway: 10.0.30.1
+    target_ip: 10.0.30.20
+
+rules:
+  - from: guest
+    to: corp
+    expect: deny
+
+  - from: guest
+    to: iot
+    expect: deny
+
+  - from: iot
+    to: corp
+    expect: deny
+
+  - from: guest
+    to: internet
+    expect: allow
+
+  - from: corp
+    to: iot
+    expect: allow
+    ports: [22, 443]
+
+defaults:
+  ports: [22, 80, 443, 445, 3389]   # used for a rule when it has no `ports:` of its own
+  dhcp_timeout: 15                  # seconds to wait for DHCP before falling back to static
+  internet_target: 1.1.1.1
+  internet_port: 443
+  ping: true                        # also attempt ICMP ping alongside TCP port checks
