@@ -5,6 +5,7 @@
 name = "vlanverify"
 version = "0.1.1"
 description = "Verifies that VLAN network isolation actually holds in practice, for Cyber Essentials Plus style audits."
+readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 authors = [{name = "Stable State Consulting Ltd"}]
